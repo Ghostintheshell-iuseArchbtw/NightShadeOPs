@@ -2,7 +2,7 @@
 ###THIS TOOL IS UNDERDEVELOPMENT
 ## Introduction
 
-The Exploit Automation Toolkit provides a collection of scripts written in Python for automating various tasks involved in penetration testing and exploit development.
+The NightShadeOps Toolkit provides a collection of scripts written in Python for automating various tasks involved in penetration testing and exploit development.
 
 ## Functionality
 
@@ -38,7 +38,7 @@ The Exploit Automation Toolkit provides a collection of scripts written in Pytho
 
 1. Clone the repository to your local machine.
 2. Ensure all prerequisites are installed and configured.
-3. Run the `exploit_toolkit.py` script using Python.
+3. Run the `NightShadeOps.py` script using Python.
 4. Follow the on-screen menu to choose the desired functionality.
 
 ## Contributing
